@@ -8,36 +8,42 @@
     android:rowCount="4">
 
     <FrameLayout
+        android:id="@+id/number_seven"
+        style="@style/NumPadButton"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/border">
+
+        <TextView
+            style="@style/NumPadText"
+            android:gravity="center"
+            android:text="@string/seven" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/number_four"
         style="@style/NumPadButton"
         android:background="@drawable/border">
 
         <TextView
             style="@style/NumPadText"
             android:gravity="center"
-            android:text="7" />
+            android:text="@string/four" />
     </FrameLayout>
 
     <FrameLayout
+        android:id="@+id/number_one"
         style="@style/NumPadButton"
         android:background="@drawable/border">
 
         <TextView
             style="@style/NumPadText"
             android:gravity="center"
-            android:text="4" />
+            android:text="@string/one" />
     </FrameLayout>
 
     <FrameLayout
-        style="@style/NumPadButton"
-        android:background="@drawable/border">
-
-        <TextView
-            style="@style/NumPadText"
-            android:gravity="center"
-            android:text="1" />
-    </FrameLayout>
-
-    <FrameLayout
+        android:id="@+id/number_zero"
         style="@style/NumPadButton"
         android:layout_columnSpan="2"
         android:layout_columnWeight="2"
@@ -46,91 +52,100 @@
         <TextView
             style="@style/NumPadText"
             android:gravity="center"
-            android:text="0" />
+            android:text="@string/zero" />
     </FrameLayout>
 
     <FrameLayout
+        android:id="@+id/number_eight"
         style="@style/NumPadButton"
         android:background="@drawable/border">
 
         <TextView
             style="@style/NumPadText"
             android:gravity="center"
-            android:text="8" />
+            android:text="@string/eight" />
     </FrameLayout>
 
     <FrameLayout
+        android:id="@+id/number_five"
         style="@style/NumPadButton"
         android:background="@drawable/border">
 
         <TextView
             style="@style/NumPadText"
             android:gravity="center"
-            android:text="5" />
+            android:text="@string/five" />
     </FrameLayout>
 
     <FrameLayout
+        android:id="@+id/number_two"
         style="@style/NumPadButton"
         android:background="@drawable/border">
 
         <TextView
             style="@style/NumPadText"
             android:gravity="center"
-            android:text="2" />
+            android:text="@string/two" />
     </FrameLayout>
 
     <FrameLayout
+        android:id="@+id/number_nine"
         style="@style/NumPadButton"
         android:background="@drawable/border">
 
         <TextView
             style="@style/NumPadText"
             android:gravity="center"
-            android:text="9" />
+            android:text="@string/nine" />
     </FrameLayout>
 
     <FrameLayout
+        android:id="@+id/number_six"
         style="@style/NumPadButton"
         android:background="@drawable/border">
 
         <TextView
             style="@style/NumPadText"
             android:gravity="center"
-            android:text="6" />
+            android:text="@string/six" />
     </FrameLayout>
 
     <FrameLayout
+        android:id="@+id/number_three"
         style="@style/NumPadButton"
         android:background="@drawable/border">
 
         <TextView
             style="@style/NumPadText"
             android:gravity="center"
-            android:text="3" />
+            android:text="@string/three" />
     </FrameLayout>
 
     <FrameLayout
+        android:id="@+id/decimal"
         style="@style/NumPadButton"
         android:background="@drawable/border">
 
         <TextView
             style="@style/NumPadText"
             android:gravity="center"
-            android:text="." />
+            android:text="@string/decimal" />
     </FrameLayout>
 
     <FrameLayout
+        android:id="@+id/all_clear"
         style="@style/NumPadButton"
         android:background="@drawable/border">
 
         <TextView
             style="@style/NumPadText"
             android:gravity="center"
-            android:text="AC"
+            android:text="@string/all_clear"
             android:textColor="@color/colorAccent" />
     </FrameLayout>
 
     <FrameLayout
+        android:id="@+id/delete"
         style="@style/NumPadButton"
         android:background="@drawable/border">
 
@@ -141,6 +156,7 @@
     </FrameLayout>
 
     <FrameLayout
+        android:id="@+id/go"
         style="@style/NumPadButton"
         android:layout_rowSpan="2"
         android:layout_rowWeight="2"
@@ -148,7 +164,7 @@
 
         <TextView
             style="@style/NumPadText"
-            android:text="GO"
+            android:text="@string/go"
             android:textColor="@color/white" />
     </FrameLayout>
 
