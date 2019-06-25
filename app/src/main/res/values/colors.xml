@@ -3,7 +3,15 @@
     <color name="colorPrimary">#f1f3f3</color>
     <color name="colorPrimaryDark">#f1f3f3</color>
     <color name="colorAccent">#ff5d00</color>
+
     <color name="divider">#dedede</color>
+    <color name="light">#aeafb1</color>
+    <color name="line">#6f7480</color>
+
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
+
+    <color name="under">#4091e2</color>
+    <color name="normal">#07b566</color>
+    <color name="over">#ff6657</color>
 </resources>

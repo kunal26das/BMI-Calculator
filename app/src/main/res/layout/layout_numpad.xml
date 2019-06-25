@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:columnCount="4"
@@ -9,9 +9,7 @@
 
     <FrameLayout
         android:id="@+id/number_seven"
-        style="@style/NumPadButton"
-        android:clickable="true"
-        android:focusable="true"
+        android:layout_gravity="fill"
         android:background="@drawable/border">
 
         <TextView
@@ -22,7 +20,7 @@
 
     <FrameLayout
         android:id="@+id/number_four"
-        style="@style/NumPadButton"
+        android:layout_gravity="fill"
         android:background="@drawable/border">
 
         <TextView
@@ -33,7 +31,7 @@
 
     <FrameLayout
         android:id="@+id/number_one"
-        style="@style/NumPadButton"
+        android:layout_gravity="fill"
         android:background="@drawable/border">
 
         <TextView
@@ -44,9 +42,9 @@
 
     <FrameLayout
         android:id="@+id/number_zero"
-        style="@style/NumPadButton"
         android:layout_columnSpan="2"
         android:layout_columnWeight="2"
+        android:layout_gravity="fill"
         android:background="@drawable/border">
 
         <TextView
@@ -57,7 +55,7 @@
 
     <FrameLayout
         android:id="@+id/number_eight"
-        style="@style/NumPadButton"
+        android:layout_gravity="fill"
         android:background="@drawable/border">
 
         <TextView
@@ -68,7 +66,7 @@
 
     <FrameLayout
         android:id="@+id/number_five"
-        style="@style/NumPadButton"
+        android:layout_gravity="fill"
         android:background="@drawable/border">
 
         <TextView
@@ -79,7 +77,7 @@
 
     <FrameLayout
         android:id="@+id/number_two"
-        style="@style/NumPadButton"
+        android:layout_gravity="fill"
         android:background="@drawable/border">
 
         <TextView
@@ -90,7 +88,7 @@
 
     <FrameLayout
         android:id="@+id/number_nine"
-        style="@style/NumPadButton"
+        android:layout_gravity="fill"
         android:background="@drawable/border">
 
         <TextView
@@ -101,7 +99,7 @@
 
     <FrameLayout
         android:id="@+id/number_six"
-        style="@style/NumPadButton"
+        android:layout_gravity="fill"
         android:background="@drawable/border">
 
         <TextView
@@ -112,7 +110,7 @@
 
     <FrameLayout
         android:id="@+id/number_three"
-        style="@style/NumPadButton"
+        android:layout_gravity="fill"
         android:background="@drawable/border">
 
         <TextView
@@ -123,7 +121,7 @@
 
     <FrameLayout
         android:id="@+id/decimal"
-        style="@style/NumPadButton"
+        android:layout_gravity="fill"
         android:background="@drawable/border">
 
         <TextView
@@ -134,7 +132,7 @@
 
     <FrameLayout
         android:id="@+id/all_clear"
-        style="@style/NumPadButton"
+        android:layout_gravity="fill"
         android:background="@drawable/border">
 
         <TextView
@@ -146,7 +144,7 @@
 
     <FrameLayout
         android:id="@+id/delete"
-        style="@style/NumPadButton"
+        android:layout_gravity="fill"
         android:background="@drawable/border">
 
         <TextView
@@ -157,9 +155,9 @@
 
     <FrameLayout
         android:id="@+id/go"
-        style="@style/NumPadButton"
         android:layout_rowSpan="2"
         android:layout_rowWeight="2"
+        android:layout_gravity="fill"
         android:background="@color/colorAccent">
 
         <TextView
