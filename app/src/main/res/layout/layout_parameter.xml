@@ -5,7 +5,9 @@
     android:baselineAligned="false"
     android:orientation="horizontal">
 
-    <FrameLayout
+    <LinearLayout
+        android:id="@+id/parameter_selector"
+        android:orientation="horizontal"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -13,15 +15,24 @@
         android:paddingEnd="0dp">
 
         <TextView
-            android:id="@+id/tv_parameter_type"
+            android:id="@+id/parameter_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:textColor="#000"
+            android:textColor="@color/black"
             android:textSize="18sp" />
-    </FrameLayout>
+
+        <Spinner
+            android:id="@+id/spinner_parameter_type"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:spinnerMode="dialog" />
+
+    </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/parameter_support"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -32,7 +43,7 @@
         android:paddingBottom="28dp">
 
         <TextView
-            android:id="@+id/tv_parameter_value"
+            android:id="@+id/parameter_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="textEnd"

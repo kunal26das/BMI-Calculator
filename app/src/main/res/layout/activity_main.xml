@@ -57,6 +57,7 @@
     </ScrollView>
 
     <include
+        android:id="@+id/numpad"
         layout="@layout/layout_numpad"
         android:visibility="visible"
         android:layout_width="match_parent"
