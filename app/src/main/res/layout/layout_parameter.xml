@@ -52,7 +52,7 @@
 
         <TextView
             android:textColor="@color/light"
-            android:id="@+id/tv_parameter_unit"
+            android:id="@+id/parameter_unit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="textEnd" />
