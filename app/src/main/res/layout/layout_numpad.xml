@@ -147,10 +147,12 @@
         android:layout_gravity="fill"
         android:background="@drawable/border">
 
-        <TextView
+        <ImageView
             style="@style/NumPadText"
-            android:gravity="center"
-            android:text="X" />
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:src="@mipmap/ic_delete" />
     </FrameLayout>
 
     <FrameLayout

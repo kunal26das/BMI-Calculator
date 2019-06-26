@@ -64,8 +64,11 @@
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
                                       <entry key="backgroundColor" value="ffffff" />
-                                      <entry key="foregroundImage" value="C:\Users\kunal\Documents\MEGA\Mountblue\Projects\02_BMI_Calculator\icons8-scale-100.png" />
-                                      <entry key="webIconShape" value="CIRCLE" />
+                                      <entry key="foregroundImage" value="C:\Users\kunal\Documents\MEGA\Mountblue\Projects\02_BMI_Calculator\backspace-icon-18.png" />
+                                      <entry key="generateLegacyIcon" value="false" />
+                                      <entry key="generateRoundIcon" value="false" />
+                                      <entry key="generateWebIcon" value="false" />
+                                      <entry key="outputName" value="ic_delete" />
                                     </map>
                                   </option>
                                 </PersistentState>
