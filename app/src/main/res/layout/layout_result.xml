@@ -25,7 +25,6 @@
                 android:layout_marginEnd="0dp"
                 android:elevation="24dp"
                 android:id="@+id/result_bmi_value"
-                android:text="20.8"
                 android:textColor="@color/colorAccent"
                 android:textSize="76sp" />
 
@@ -42,7 +41,7 @@
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
                     android:lines="1"
-                    android:text="BMI"
+                    android:text="@string/BMI"
                     android:textSize="40sp" />
 
                 <TextView
@@ -65,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="32dp"
-            android:text="Information"
+            android:text="@string/Information"
             android:textAlignment="center"
             android:textSize="20sp" />
 
@@ -116,7 +115,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="16.0"
+                android:text="@string/BMI_underweight"
                 android:textAlignment="textStart"
                 android:textColor="@color/light"
                 android:textSize="13sp" />
@@ -125,7 +124,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="18.5"
+                android:text="@string/BMI_normal_start"
                 android:textAlignment="center"
                 android:textColor="@color/light"
                 android:textSize="13sp" />
@@ -134,7 +133,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="25.0"
+                android:text="@string/BMI_normal_end"
                 android:textAlignment="center"
                 android:textColor="@color/light"
                 android:textSize="13sp" />
@@ -143,7 +142,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="40.0"
+                android:text="@string/BMI_overweight"
                 android:textAlignment="textEnd"
                 android:textColor="@color/light"
                 android:textSize="13sp" />

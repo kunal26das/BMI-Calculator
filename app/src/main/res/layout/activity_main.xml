@@ -5,6 +5,7 @@
     android:background="@color/colorPrimary">
 
     <LinearLayout
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -24,6 +25,7 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:padding="2dp"
+                android:id="@+id/back_button"
                 android:src="@mipmap/ic_back_arrow_foreground" />
 
             <TextView
@@ -33,7 +35,7 @@
                 android:layout_weight="1"
                 android:paddingStart="0dp"
                 android:paddingEnd="32dp"
-                android:text="BMI"
+                android:text="@string/BMI"
                 android:textAlignment="center"
                 android:textSize="18sp" />
         </LinearLayout>
@@ -46,14 +48,13 @@
 
 
     <ScrollView
+        android:layout_below="@id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
         <include
             layout="@layout/content_main"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true" />
+            android:layout_height="wrap_content" />
     </ScrollView>
 
     <include

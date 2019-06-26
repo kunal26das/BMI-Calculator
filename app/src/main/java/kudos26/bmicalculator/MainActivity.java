@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -49,6 +50,7 @@ import static kudos26.bmicalculator.Constants.RANGE_UNDERWEIGHT;
 import static kudos26.bmicalculator.Constants.STRING_DECIMAL;
 import static kudos26.bmicalculator.Constants.STRING_ZERO;
 
+@SuppressLint("ClickableViewAccessibility")
 public class MainActivity extends AppCompatActivity {
 
     private TextView focusInput;
@@ -64,6 +66,15 @@ public class MainActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
+
+        final ImageView backButton = findViewById(R.id.back_button);
+        backButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                MainActivity.this.finish();
+                return true;
+            }
+        });
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -108,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        setupNumpad();
+        setupNumPad();
     }
 
     private void setupWeightFunctionality() {
@@ -178,8 +189,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    private void setupNumpad() {
+    private void setupNumPad() {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int height = displayMetrics.heightPixels;
