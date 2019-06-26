@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -33,6 +32,10 @@ import static kudos26.bmicalculator.Constants.INT_ONE;
 import static kudos26.bmicalculator.Constants.INT_SIX;
 import static kudos26.bmicalculator.Constants.INT_THREE;
 import static kudos26.bmicalculator.Constants.INT_ZERO;
+import static kudos26.bmicalculator.Constants.KEY_BMI_VALUE;
+import static kudos26.bmicalculator.Constants.KEY_NUM_PAD_VISIBILITY;
+import static kudos26.bmicalculator.Constants.KEY_PARAMETER_FOCUS;
+import static kudos26.bmicalculator.Constants.KEY_RESULT_CARD_VISIBILITY;
 import static kudos26.bmicalculator.Constants.PARAMETER_HEIGHT;
 import static kudos26.bmicalculator.Constants.PARAMETER_HEIGHT_DEFAULT_UNIT;
 import static kudos26.bmicalculator.Constants.PARAMETER_HEIGHT_METER_DEFAULT_VALUE;
@@ -53,11 +56,13 @@ import static kudos26.bmicalculator.Constants.STRING_ZERO;
 @SuppressLint("ClickableViewAccessibility")
 public class MainActivity extends AppCompatActivity {
 
-    private TextView focusInput;
-    private TextView weightValueInput;
-    private TextView heightValueInput;
-    private TextView weightUnit;
-    private TextView heightUnit;
+    private TextView mFocusInput;
+    private TextView mWeightValueInput;
+    private TextView mHeightValueInput;
+    private TextView mWeightUnit;
+    private TextView mHeightUnit;
+    private View mResultCard;
+    private View mNumPad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
+        mNumPad = findViewById(R.id.num_pad);
+        mResultCard = findViewById(R.id.result_card);
         final ImageView backButton = findViewById(R.id.back_button);
         backButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -75,13 +82,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        setupNumPad();
-        setupWeightFunctionality();
-        setupHeightFunctionality();
 
         final LinearLayout weightView = findViewById(R.id.parameter_weight).findViewById(R.id.parameter_support);
         final LinearLayout heightView = findViewById(R.id.parameter_height).findViewById(R.id.parameter_support);
@@ -101,48 +101,62 @@ public class MainActivity extends AppCompatActivity {
                 showNumPad();
             }
         });
+
+        setupHeightFunctionality();
+        setupWeightFunctionality();
+        setupNumPad();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putString(KEY_BMI_VALUE, mResultCard.findViewById(R.id.result_bmi_value).toString());
+        outState.putInt(KEY_NUM_PAD_VISIBILITY, mNumPad.getVisibility());
+        outState.putInt(KEY_RESULT_CARD_VISIBILITY, mResultCard.getVisibility());
+        if (mFocusInput == mHeightValueInput) {
+            outState.putString(KEY_PARAMETER_FOCUS, PARAMETER_HEIGHT);
+        } else {
+            outState.putString(KEY_PARAMETER_FOCUS, PARAMETER_WEIGHT);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        focusWeightInput();
     }
 
     private void focusWeightInput() {
-        focusInput = weightValueInput;
-        weightValueInput.setTextColor(getResources().getColor(R.color.colorAccent));
-        heightValueInput.setTextColor(getResources().getColor(R.color.black));
+        mFocusInput = mWeightValueInput;
+        mWeightValueInput.setTextColor(getResources().getColor(R.color.colorAccent));
+        mHeightValueInput.setTextColor(getResources().getColor(R.color.black));
     }
 
     private void focusHeightInput() {
-        focusInput = heightValueInput;
-        heightValueInput.setTextColor(getResources().getColor(R.color.colorAccent));
-        weightValueInput.setTextColor(getResources().getColor(R.color.black));
+        mFocusInput = mHeightValueInput;
+        mHeightValueInput.setTextColor(getResources().getColor(R.color.colorAccent));
+        mWeightValueInput.setTextColor(getResources().getColor(R.color.black));
     }
 
     private void showNumPad() {
-        final View numPad = findViewById(R.id.num_pad);
-        final View resultCard = findViewById(R.id.result_card);
-        numPad.setVisibility(View.VISIBLE);
-        resultCard.setVisibility(View.INVISIBLE);
+        mNumPad.setVisibility(View.VISIBLE);
+        mResultCard.setVisibility(View.INVISIBLE);
     }
 
     private void showResultCard() {
-        final View numPad = findViewById(R.id.num_pad);
-        final View resultCard = findViewById(R.id.result_card);
-        resultCard.setVisibility(View.VISIBLE);
-        numPad.setVisibility(View.INVISIBLE);
+        mResultCard.setVisibility(View.VISIBLE);
+        mNumPad.setVisibility(View.INVISIBLE);
     }
 
     private void setupWeightFunctionality() {
         final View weightParameter = findViewById(R.id.parameter_weight);
         final TextView parameterType = weightParameter.findViewById(R.id.parameter_type);
         parameterType.setText(PARAMETER_WEIGHT);
-        weightValueInput = weightParameter.findViewById(R.id.parameter_value);
-        weightValueInput.setTextColor(getResources().getColor(R.color.colorAccent));
-        weightValueInput.setText(String.valueOf(PARAMETER_WEIGHT_KILOGRAM_DEFAULT_VALUE));
-        weightUnit = weightParameter.findViewById(R.id.parameter_unit);
-        weightUnit.setText(PARAMETER_WEIGHT_DEFAULT_UNIT);
+        mWeightValueInput = weightParameter.findViewById(R.id.parameter_value);
+        mWeightValueInput.setTextColor(getResources().getColor(R.color.colorAccent));
+        mWeightValueInput.setText(String.valueOf(PARAMETER_WEIGHT_KILOGRAM_DEFAULT_VALUE));
+        mWeightUnit = weightParameter.findViewById(R.id.parameter_unit);
+        mWeightUnit.setText(PARAMETER_WEIGHT_DEFAULT_UNIT);
         final Spinner weightSpinner = weightParameter.findViewById(R.id.spinner_parameter_type);
         final LinearLayout weightSelector = weightParameter.findViewById(R.id.parameter_selector);
         CustomAdapter weightSpinnerAdapter = new CustomAdapter(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.weight_units));
@@ -151,8 +165,8 @@ public class MainActivity extends AppCompatActivity {
         weightSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                weightUnit.setText(getResources().getStringArray(R.array.weight_units)[position]);
-                focusWeightInput();
+                mWeightUnit.setText(getResources().getStringArray(R.array.weight_units)[position]);
+                //focusWeightInput();
             }
 
             @Override
@@ -172,10 +186,10 @@ public class MainActivity extends AppCompatActivity {
         final View heightParameter = findViewById(R.id.parameter_height);
         final TextView parameterType = heightParameter.findViewById(R.id.parameter_type);
         parameterType.setText(PARAMETER_HEIGHT);
-        heightValueInput = heightParameter.findViewById(R.id.parameter_value);
-        heightValueInput.setText(String.valueOf(PARAMETER_HEIGHT_METER_DEFAULT_VALUE));
-        heightUnit = heightParameter.findViewById(R.id.parameter_unit);
-        heightUnit.setText(PARAMETER_HEIGHT_DEFAULT_UNIT);
+        mHeightValueInput = heightParameter.findViewById(R.id.parameter_value);
+        mHeightValueInput.setText(String.valueOf(PARAMETER_HEIGHT_METER_DEFAULT_VALUE));
+        mHeightUnit = heightParameter.findViewById(R.id.parameter_unit);
+        mHeightUnit.setText(PARAMETER_HEIGHT_DEFAULT_UNIT);
         final Spinner heightSpinner = heightParameter.findViewById(R.id.spinner_parameter_type);
         final LinearLayout heightSelector = heightParameter.findViewById(R.id.parameter_selector);
         CustomAdapter heightSpinnerAdapter = new CustomAdapter(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.height_units));
@@ -184,8 +198,8 @@ public class MainActivity extends AppCompatActivity {
         heightSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                heightUnit.setText(getResources().getStringArray(R.array.height_units)[position]);
-                focusHeightInput();
+                mHeightUnit.setText(getResources().getStringArray(R.array.height_units)[position]);
+                //focusHeightInput();
             }
 
             @Override
@@ -218,19 +232,15 @@ public class MainActivity extends AppCompatActivity {
         numberButtons.add((FrameLayout) findViewById(R.id.number_seven));
         numberButtons.add((FrameLayout) findViewById(R.id.number_eight));
         numberButtons.add((FrameLayout) findViewById(R.id.number_nine));
-
+        final Drawable simpleDrawable = numberButtons.get(0).getBackground();
         final FrameLayout allClearButton = findViewById(R.id.all_clear);
         final FrameLayout decimalButton = findViewById(R.id.decimal);
         final FrameLayout deleteButton = findViewById(R.id.delete);
         final FrameLayout goButton = findViewById(R.id.go);
-
-        final Drawable simpleDrawable = deleteButton.getBackground();
-
         LayoutParams params = goButton.getLayoutParams();
         params.height = min / INT_FOUR;
         params.width = min / INT_FOUR;
         goButton.setLayoutParams(params);
-
         for (int i = INT_ZERO; i < numberButtons.size(); i++) {
             final String stringNumber = String.valueOf(i);
             View button = numberButtons.get(i);
@@ -243,15 +253,15 @@ public class MainActivity extends AppCompatActivity {
                 public boolean onTouch(View view, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
                         view.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                        if (focusInput != null) {
-                            String input = focusInput.getText().toString();
+                        if (mFocusInput != null) {
+                            String input = mFocusInput.getText().toString();
                             int length = input.length();
                             if (length == INT_ONE && input.matches(STRING_ZERO)) {
-                                focusInput.setText(stringNumber);
+                                mFocusInput.setText(stringNumber);
                             } else if (input.contains(STRING_DECIMAL) && length > INT_ONE && length < INT_SIX) {
-                                focusInput.append(stringNumber);
+                                mFocusInput.append(stringNumber);
                             } else if (length > INT_ZERO && length < INT_THREE) {
-                                focusInput.append(stringNumber);
+                                mFocusInput.append(stringNumber);
                             }
                         }
                     } else if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -267,11 +277,11 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     view.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                    String input = focusInput.getText().toString();
+                    String input = mFocusInput.getText().toString();
                     if (input.contains(STRING_DECIMAL)) {
                         return true;
                     } else {
-                        focusInput.append(STRING_DECIMAL);
+                        mFocusInput.append(STRING_DECIMAL);
                     }
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     view.setBackground(simpleDrawable);
@@ -285,13 +295,13 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     view.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                    if (focusInput != null) {
-                        String input = focusInput.getText().toString();
+                    if (mFocusInput != null) {
+                        String input = mFocusInput.getText().toString();
                         int length = input.length();
                         if (length == INT_ONE) {
-                            focusInput.setText(STRING_ZERO);
+                            mFocusInput.setText(STRING_ZERO);
                         } else {
-                            focusInput.setText(input.substring(INT_ZERO, length - 1));
+                            mFocusInput.setText(input.substring(INT_ZERO, length - 1));
                         }
                     }
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
@@ -306,8 +316,8 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     view.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                    if (focusInput != null) {
-                        focusInput.setText(STRING_ZERO);
+                    if (mFocusInput != null) {
+                        mFocusInput.setText(STRING_ZERO);
                     }
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     view.setBackground(simpleDrawable);
@@ -350,10 +360,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private float getBMI() {
-        float weightValue = Float.valueOf(this.weightValueInput.getText().toString());
-        float heightValue = Float.valueOf(this.heightValueInput.getText().toString());
-        String weightUnit = this.weightUnit.getText().toString();
-        String heightUnit = this.heightUnit.getText().toString();
+        float weightValue = Float.valueOf(this.mWeightValueInput.getText().toString());
+        float heightValue = Float.valueOf(this.mHeightValueInput.getText().toString());
+        String weightUnit = this.mWeightUnit.getText().toString();
+        String heightUnit = this.mHeightUnit.getText().toString();
         if (weightUnit.equals(PARAMETER_WEIGHT_UNIT_POUND)) {
             weightValue *= POUND_TO_KILOGRAM;
         }

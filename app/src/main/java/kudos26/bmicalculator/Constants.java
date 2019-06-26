@@ -56,4 +56,9 @@ public class Constants {
     public static final String BMI_OVER_WEIGHT = "Over weight";
 
     public static final String ERROR_INVALID_BMI = "Invalid BMI! Please check your input";
+
+    public static final String KEY_BMI_VALUE = "BMI";
+    public static final String KEY_NUM_PAD_VISIBILITY = "Num Pad Visibility";
+    public static final String KEY_RESULT_CARD_VISIBILITY = "Result Card Visibility";
+    public static final String KEY_PARAMETER_FOCUS = "Parameter Focus";
 }
