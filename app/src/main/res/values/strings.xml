@@ -37,8 +37,8 @@
     </string-array>
 
     <string-array name="height_units">
-        <item id="centimeter">Centimeter</item>
         <item id="meter">Meter</item>
+        <item id="centimeter">Centimeter</item>
         <item id="feet">Feet</item>
         <item id="inch">Inch</item>
     </string-array>

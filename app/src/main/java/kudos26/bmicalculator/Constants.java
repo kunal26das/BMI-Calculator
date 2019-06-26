@@ -28,9 +28,32 @@ public class Constants {
     public static final String PARAMETER_WEIGHT = "Weight";
     public static final String PARAMETER_HEIGHT = "Height";
 
-    public static final String PARAMETER_WEIGHT_DEFAULT_UNIT = "Kilogram";
-    public static final String PARAMETER_HEIGHT_DEFAULT_UNIT = "Centimeter";
+    public static final String PARAMETER_WEIGHT_UNIT_KILOGRAM = "Kilogram";
+    public static final String PARAMETER_WEIGHT_UNIT_POUND = "Pound";
 
-    public static final int PARAMETER_WEIGHT_DEFAULT_VALUE = 60;
-    public static final int PARAMETER_HEIGHT_DEFAULT_VALUE = 170;
+    public static final String PARAMETER_HEIGHT_UNIT_CENTIMETER = "Centimeter";
+    public static final String PARAMETER_HEIGHT_UNIT_METER = "Meter";
+    public static final String PARAMETER_HEIGHT_UNIT_FEET = "Feet";
+    public static final String PARAMETER_HEIGHT_UNIT_INCH = "Inch";
+
+    public static final String PARAMETER_WEIGHT_DEFAULT_UNIT = PARAMETER_WEIGHT_UNIT_KILOGRAM;
+    public static final String PARAMETER_HEIGHT_DEFAULT_UNIT = PARAMETER_HEIGHT_UNIT_METER;
+
+    public static final int PARAMETER_WEIGHT_KILOGRAM_DEFAULT_VALUE = 60;
+    public static final float PARAMETER_HEIGHT_METER_DEFAULT_VALUE = 1.7f;
+
+    public static final float POUND_TO_KILOGRAM = 0.453592f;
+    public static final float CENTIMETER_TO_METER = 0.01f;
+    public static final float FEET_TO_METER = 0.3048f;
+    public static final float INCH_TO_METER = 0.0254f;
+
+    public static final float[] RANGE_UNDERWEIGHT = {16.0f, 18.5f};
+    public static final float[] RANGE_NORMAL = {18.5f, 25.0f};
+    public static final float[] RANGE_OVER_WEIGHT = {25.0f, 40.0f};
+
+    public static final String BMI_UNDERWEIGHT = "Underweight";
+    public static final String BMI_NORMAL = "Normal";
+    public static final String BMI_OVER_WEIGHT = "Over weight";
+
+    public static final String ERROR_INVALID_BMI = "Invalid BMI! Please check your input";
 }
