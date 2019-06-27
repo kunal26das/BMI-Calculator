@@ -23,6 +23,7 @@
             android:textSize="18sp" />
 
         <Spinner
+            android:clickable="false"
             android:id="@+id/spinner_parameter_type"
             android:layout_width="40dp"
             android:layout_height="wrap_content"

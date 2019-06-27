@@ -59,7 +59,7 @@
 
     <include
         android:id="@+id/num_pad"
-        layout="@layout/layout_numpad"
+        layout="@layout/layout_num_pad"
         android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

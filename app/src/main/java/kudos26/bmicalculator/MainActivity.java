@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -106,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         if (mResult.getVisibility() == View.VISIBLE) {
             outState.putInt(KEY_VISIBILITY_RESULT, View.VISIBLE);
@@ -208,6 +209,8 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                             mWeightUnit.setText(selectedUnit);
+                        } else {
+                            focusWeightInput(currentValue);
                         }
                         showNumPad();
                     }
@@ -316,6 +319,8 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                             mHeightUnit.setText(selectedUnit);
+                        } else {
+                            focusHeightInput(currentValue);
                         }
                         showNumPad();
                     }
