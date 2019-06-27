@@ -28,19 +28,19 @@ public class Constants {
     public static final String PARAMETER_WEIGHT = "Weight";
     public static final String PARAMETER_HEIGHT = "Height";
 
-    public static final String PARAMETER_WEIGHT_UNIT_KILOGRAM = "Kilogram";
-    public static final String PARAMETER_WEIGHT_UNIT_POUND = "Pound";
+    public static final String WEIGHT_UNIT_KILOGRAM = "Kilogram";
+    public static final String WEIGHT_UNIT_POUND = "Pound";
 
-    public static final String PARAMETER_HEIGHT_UNIT_CENTIMETER = "Centimeter";
-    public static final String PARAMETER_HEIGHT_UNIT_METER = "Meter";
-    public static final String PARAMETER_HEIGHT_UNIT_FEET = "Feet";
-    public static final String PARAMETER_HEIGHT_UNIT_INCH = "Inch";
+    public static final String HEIGHT_UNIT_CENTIMETER = "Centimeter";
+    public static final String HEIGHT_UNIT_METER = "Meter";
+    public static final String HEIGHT_UNIT_FEET = "Feet";
+    public static final String HEIGHT_UNIT_INCH = "Inch";
 
-    public static final String PARAMETER_WEIGHT_DEFAULT_UNIT = PARAMETER_WEIGHT_UNIT_KILOGRAM;
-    public static final String PARAMETER_HEIGHT_DEFAULT_UNIT = PARAMETER_HEIGHT_UNIT_METER;
+    public static final String WEIGHT_DEFAULT_UNIT = WEIGHT_UNIT_KILOGRAM;
+    public static final String HEIGHT_DEFAULT_UNIT = HEIGHT_UNIT_METER;
 
-    public static final int PARAMETER_WEIGHT_KILOGRAM_DEFAULT_VALUE = 60;
-    public static final float PARAMETER_HEIGHT_METER_DEFAULT_VALUE = 1.7f;
+    public static final int WEIGHT_KILOGRAM_DEFAULT_VALUE = 60;
+    public static final float HEIGHT_METER_DEFAULT_VALUE = 1.7f;
 
     public static final float POUND_TO_KILOGRAM = 0.453592f;
     public static final float CENTIMETER_TO_METER = 0.01f;
@@ -58,7 +58,10 @@ public class Constants {
     public static final String ERROR_INVALID_BMI = "Invalid BMI! Please check your input";
 
     public static final String KEY_BMI_VALUE = "BMI";
-    public static final String KEY_NUM_PAD_VISIBILITY = "Num Pad Visibility";
-    public static final String KEY_RESULT_CARD_VISIBILITY = "Result Card Visibility";
-    public static final String KEY_PARAMETER_FOCUS = "Parameter Focus";
+    public static final String KEY_FOCUS_WEIGHT = "Focus Weight";
+    public static final String KEY_FOCUS_HEIGHT = "Focus Height";
+    public static final String KEY_VISIBILITY_NUMPAD = "NumPad Visibility";
+    public static final String KEY_VISIBILITY_RESULT = "Result Visibility";
+    public static final String KEY_WEIGHT_INPUT_VALUE = "Weight Input Value";
+    public static final String KEY_HEIGHT_INPUT_VALUE = "Height Input Value";
 }

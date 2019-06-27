@@ -26,6 +26,11 @@ import static kudos26.bmicalculator.Constants.BMI_UNDERWEIGHT;
 import static kudos26.bmicalculator.Constants.CENTIMETER_TO_METER;
 import static kudos26.bmicalculator.Constants.ERROR_INVALID_BMI;
 import static kudos26.bmicalculator.Constants.FEET_TO_METER;
+import static kudos26.bmicalculator.Constants.HEIGHT_DEFAULT_UNIT;
+import static kudos26.bmicalculator.Constants.HEIGHT_METER_DEFAULT_VALUE;
+import static kudos26.bmicalculator.Constants.HEIGHT_UNIT_CENTIMETER;
+import static kudos26.bmicalculator.Constants.HEIGHT_UNIT_FEET;
+import static kudos26.bmicalculator.Constants.HEIGHT_UNIT_INCH;
 import static kudos26.bmicalculator.Constants.INCH_TO_METER;
 import static kudos26.bmicalculator.Constants.INT_FOUR;
 import static kudos26.bmicalculator.Constants.INT_ONE;
@@ -33,25 +38,21 @@ import static kudos26.bmicalculator.Constants.INT_SIX;
 import static kudos26.bmicalculator.Constants.INT_THREE;
 import static kudos26.bmicalculator.Constants.INT_ZERO;
 import static kudos26.bmicalculator.Constants.KEY_BMI_VALUE;
-import static kudos26.bmicalculator.Constants.KEY_NUM_PAD_VISIBILITY;
-import static kudos26.bmicalculator.Constants.KEY_PARAMETER_FOCUS;
-import static kudos26.bmicalculator.Constants.KEY_RESULT_CARD_VISIBILITY;
+import static kudos26.bmicalculator.Constants.KEY_FOCUS_HEIGHT;
+import static kudos26.bmicalculator.Constants.KEY_HEIGHT_INPUT_VALUE;
+import static kudos26.bmicalculator.Constants.KEY_VISIBILITY_RESULT;
+import static kudos26.bmicalculator.Constants.KEY_WEIGHT_INPUT_VALUE;
 import static kudos26.bmicalculator.Constants.PARAMETER_HEIGHT;
-import static kudos26.bmicalculator.Constants.PARAMETER_HEIGHT_DEFAULT_UNIT;
-import static kudos26.bmicalculator.Constants.PARAMETER_HEIGHT_METER_DEFAULT_VALUE;
-import static kudos26.bmicalculator.Constants.PARAMETER_HEIGHT_UNIT_CENTIMETER;
-import static kudos26.bmicalculator.Constants.PARAMETER_HEIGHT_UNIT_FEET;
-import static kudos26.bmicalculator.Constants.PARAMETER_HEIGHT_UNIT_INCH;
 import static kudos26.bmicalculator.Constants.PARAMETER_WEIGHT;
-import static kudos26.bmicalculator.Constants.PARAMETER_WEIGHT_DEFAULT_UNIT;
-import static kudos26.bmicalculator.Constants.PARAMETER_WEIGHT_KILOGRAM_DEFAULT_VALUE;
-import static kudos26.bmicalculator.Constants.PARAMETER_WEIGHT_UNIT_POUND;
 import static kudos26.bmicalculator.Constants.POUND_TO_KILOGRAM;
 import static kudos26.bmicalculator.Constants.RANGE_NORMAL;
 import static kudos26.bmicalculator.Constants.RANGE_OVER_WEIGHT;
 import static kudos26.bmicalculator.Constants.RANGE_UNDERWEIGHT;
 import static kudos26.bmicalculator.Constants.STRING_DECIMAL;
 import static kudos26.bmicalculator.Constants.STRING_ZERO;
+import static kudos26.bmicalculator.Constants.WEIGHT_DEFAULT_UNIT;
+import static kudos26.bmicalculator.Constants.WEIGHT_KILOGRAM_DEFAULT_VALUE;
+import static kudos26.bmicalculator.Constants.WEIGHT_UNIT_POUND;
 
 @SuppressLint("ClickableViewAccessibility")
 public class MainActivity extends AppCompatActivity {
@@ -61,7 +62,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView mHeightValueInput;
     private TextView mWeightUnit;
     private TextView mHeightUnit;
-    private View mResultCard;
+    private Boolean mWeightSpinnerFlag;
+    private Boolean mHeightSpinnerFlag;
+    private View mResult;
     private View mNumPad;
 
     @Override
@@ -72,8 +75,11 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
+        mWeightSpinnerFlag = false;
+        mHeightSpinnerFlag = false;
+
         mNumPad = findViewById(R.id.num_pad);
-        mResultCard = findViewById(R.id.result_card);
+        mResult = findViewById(R.id.result_card);
         final ImageView backButton = findViewById(R.id.back_button);
         backButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -104,47 +110,67 @@ public class MainActivity extends AppCompatActivity {
 
         setupHeightFunctionality();
         setupWeightFunctionality();
-        setupNumPad();
+        setupNumPadFunctionality();
+        restoreSavedInstanceState(savedInstanceState);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(KEY_BMI_VALUE, mResultCard.findViewById(R.id.result_bmi_value).toString());
-        outState.putInt(KEY_NUM_PAD_VISIBILITY, mNumPad.getVisibility());
-        outState.putInt(KEY_RESULT_CARD_VISIBILITY, mResultCard.getVisibility());
-        if (mFocusInput == mHeightValueInput) {
-            outState.putString(KEY_PARAMETER_FOCUS, PARAMETER_HEIGHT);
+        if (mResult.getVisibility() == View.VISIBLE) {
+            outState.putInt(KEY_VISIBILITY_RESULT, View.VISIBLE);
+            TextView bmiValueTextView = mResult.findViewById(R.id.result_bmi_value);
+            outState.putString(KEY_BMI_VALUE, bmiValueTextView.getText().toString());
         } else {
-            outState.putString(KEY_PARAMETER_FOCUS, PARAMETER_WEIGHT);
+            outState.putInt(KEY_VISIBILITY_RESULT, View.INVISIBLE);
+        }
+        outState.putString(KEY_WEIGHT_INPUT_VALUE, mWeightValueInput.getText().toString());
+        outState.putString(KEY_HEIGHT_INPUT_VALUE, mHeightValueInput.getText().toString());
+        outState.putBoolean(KEY_FOCUS_HEIGHT, false);
+        if (mFocusInput == mHeightValueInput) {
+            outState.putBoolean(KEY_FOCUS_HEIGHT, true);
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        focusWeightInput();
+    private void restoreSavedInstanceState(Bundle inState) {
+        if (inState != null) {
+            if (inState.getBoolean(KEY_FOCUS_HEIGHT)) {
+                focusHeightInput();
+            } else {
+                focusWeightInput();
+            }
+            mWeightValueInput.setText(inState.getString(KEY_WEIGHT_INPUT_VALUE));
+            mHeightValueInput.setText(inState.getString(KEY_HEIGHT_INPUT_VALUE));
+            if (inState.getInt(KEY_VISIBILITY_RESULT) == View.VISIBLE) {
+                setBMIString(inState.getString(KEY_BMI_VALUE));
+                showResult();
+            } else {
+                showNumPad();
+            }
+        }
     }
 
     private void focusWeightInput() {
         mFocusInput = mWeightValueInput;
+        mWeightValueInput.setText(STRING_ZERO);
         mWeightValueInput.setTextColor(getResources().getColor(R.color.colorAccent));
         mHeightValueInput.setTextColor(getResources().getColor(R.color.black));
     }
 
     private void focusHeightInput() {
         mFocusInput = mHeightValueInput;
+        mHeightValueInput.setText(STRING_ZERO);
         mHeightValueInput.setTextColor(getResources().getColor(R.color.colorAccent));
         mWeightValueInput.setTextColor(getResources().getColor(R.color.black));
     }
 
     private void showNumPad() {
         mNumPad.setVisibility(View.VISIBLE);
-        mResultCard.setVisibility(View.INVISIBLE);
+        mResult.setVisibility(View.INVISIBLE);
     }
 
-    private void showResultCard() {
-        mResultCard.setVisibility(View.VISIBLE);
+    private void showResult() {
+        mResult.setVisibility(View.VISIBLE);
         mNumPad.setVisibility(View.INVISIBLE);
     }
 
@@ -154,9 +180,9 @@ public class MainActivity extends AppCompatActivity {
         parameterType.setText(PARAMETER_WEIGHT);
         mWeightValueInput = weightParameter.findViewById(R.id.parameter_value);
         mWeightValueInput.setTextColor(getResources().getColor(R.color.colorAccent));
-        mWeightValueInput.setText(String.valueOf(PARAMETER_WEIGHT_KILOGRAM_DEFAULT_VALUE));
+        mWeightValueInput.setText(String.valueOf(WEIGHT_KILOGRAM_DEFAULT_VALUE));
         mWeightUnit = weightParameter.findViewById(R.id.parameter_unit);
-        mWeightUnit.setText(PARAMETER_WEIGHT_DEFAULT_UNIT);
+        mWeightUnit.setText(WEIGHT_DEFAULT_UNIT);
         final Spinner weightSpinner = weightParameter.findViewById(R.id.spinner_parameter_type);
         final LinearLayout weightSelector = weightParameter.findViewById(R.id.parameter_selector);
         CustomAdapter weightSpinnerAdapter = new CustomAdapter(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.weight_units));
@@ -165,8 +191,12 @@ public class MainActivity extends AppCompatActivity {
         weightSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                mWeightUnit.setText(getResources().getStringArray(R.array.weight_units)[position]);
-                //focusWeightInput();
+                if (mWeightSpinnerFlag) {
+                    mWeightUnit.setText(getResources().getStringArray(R.array.weight_units)[position]);
+                    focusWeightInput();
+                } else {
+                    mWeightSpinnerFlag = true;
+                }
             }
 
             @Override
@@ -187,9 +217,9 @@ public class MainActivity extends AppCompatActivity {
         final TextView parameterType = heightParameter.findViewById(R.id.parameter_type);
         parameterType.setText(PARAMETER_HEIGHT);
         mHeightValueInput = heightParameter.findViewById(R.id.parameter_value);
-        mHeightValueInput.setText(String.valueOf(PARAMETER_HEIGHT_METER_DEFAULT_VALUE));
+        mHeightValueInput.setText(String.valueOf(HEIGHT_METER_DEFAULT_VALUE));
         mHeightUnit = heightParameter.findViewById(R.id.parameter_unit);
-        mHeightUnit.setText(PARAMETER_HEIGHT_DEFAULT_UNIT);
+        mHeightUnit.setText(HEIGHT_DEFAULT_UNIT);
         final Spinner heightSpinner = heightParameter.findViewById(R.id.spinner_parameter_type);
         final LinearLayout heightSelector = heightParameter.findViewById(R.id.parameter_selector);
         CustomAdapter heightSpinnerAdapter = new CustomAdapter(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.height_units));
@@ -198,8 +228,12 @@ public class MainActivity extends AppCompatActivity {
         heightSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                mHeightUnit.setText(getResources().getStringArray(R.array.height_units)[position]);
-                //focusHeightInput();
+                if (mHeightSpinnerFlag) {
+                    mHeightUnit.setText(getResources().getStringArray(R.array.height_units)[position]);
+                    focusHeightInput();
+                } else {
+                    mHeightSpinnerFlag = true;
+                }
             }
 
             @Override
@@ -214,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void setupNumPad() {
+    private void setupNumPadFunctionality() {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int height = displayMetrics.heightPixels;
@@ -330,27 +364,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    float bmiFloat = getBMI();
+                    float bmi = getBMI();
                     final View resultCard = findViewById(R.id.result_card);
-                    view.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                     final TextView bmiTypeTextView = resultCard.findViewById(R.id.result_bmi_type);
-                    if (bmiFloat >= RANGE_UNDERWEIGHT[0] && bmiFloat < RANGE_UNDERWEIGHT[1]) {
+                    if (bmi >= RANGE_UNDERWEIGHT[0] && bmi < RANGE_UNDERWEIGHT[1]) {
                         bmiTypeTextView.setText(BMI_UNDERWEIGHT);
                         bmiTypeTextView.setTextColor(getResources().getColor(R.color.under));
-                    } else if (bmiFloat >= RANGE_NORMAL[0] && bmiFloat <= RANGE_NORMAL[1]) {
+                    } else if (bmi >= RANGE_NORMAL[0] && bmi <= RANGE_NORMAL[1]) {
                         bmiTypeTextView.setText(BMI_NORMAL);
                         bmiTypeTextView.setTextColor(getResources().getColor(R.color.normal));
-                    } else if (bmiFloat > RANGE_OVER_WEIGHT[0] && bmiFloat <= RANGE_OVER_WEIGHT[1]) {
+                    } else if (bmi > RANGE_OVER_WEIGHT[0] && bmi <= RANGE_OVER_WEIGHT[1]) {
                         bmiTypeTextView.setText(BMI_OVER_WEIGHT);
                         bmiTypeTextView.setTextColor(getResources().getColor(R.color.over));
                     } else {
                         Toast.makeText(view.getContext(), ERROR_INVALID_BMI, Toast.LENGTH_SHORT).show();
                         return true;
                     }
-                    final TextView bmiValueTextView = resultCard.findViewById(R.id.result_bmi_value);
-                    String bmiString = String.valueOf(bmiFloat);
-                    bmiValueTextView.setText(bmiString);
-                    showResultCard();
+                    setBMIString(String.valueOf(bmi));
+                    showResult();
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     view.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 }
@@ -360,23 +391,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private float getBMI() {
-        float weightValue = Float.valueOf(this.mWeightValueInput.getText().toString());
-        float heightValue = Float.valueOf(this.mHeightValueInput.getText().toString());
-        String weightUnit = this.mWeightUnit.getText().toString();
-        String heightUnit = this.mHeightUnit.getText().toString();
-        if (weightUnit.equals(PARAMETER_WEIGHT_UNIT_POUND)) {
+        float weightValue = Float.valueOf(mWeightValueInput.getText().toString());
+        float heightValue = Float.valueOf(mHeightValueInput.getText().toString());
+        String weightUnit = mWeightUnit.getText().toString();
+        String heightUnit = mHeightUnit.getText().toString();
+        if (weightUnit.equals(WEIGHT_UNIT_POUND)) {
             weightValue *= POUND_TO_KILOGRAM;
         }
         switch (heightUnit) {
-            case PARAMETER_HEIGHT_UNIT_CENTIMETER: {
+            case HEIGHT_UNIT_CENTIMETER: {
                 heightValue *= CENTIMETER_TO_METER;
                 break;
             }
-            case PARAMETER_HEIGHT_UNIT_FEET: {
+            case HEIGHT_UNIT_FEET: {
                 heightValue *= FEET_TO_METER;
                 break;
             }
-            case PARAMETER_HEIGHT_UNIT_INCH: {
+            case HEIGHT_UNIT_INCH: {
                 heightValue *= INCH_TO_METER;
                 break;
             }
@@ -386,5 +417,11 @@ public class MainActivity extends AppCompatActivity {
             bmiResult = Math.round(bmiResult * 10) / 10.0f;
             return bmiResult;
         } else return 1;
+    }
+
+    private void setBMIString(String bmiString) {
+        final View resultCard = findViewById(R.id.result_card);
+        final TextView bmiValueTextView = resultCard.findViewById(R.id.result_bmi_value);
+        bmiValueTextView.setText(bmiString);
     }
 }
