@@ -14,15 +14,6 @@ public class Constants {
     public static final int INT_NINE = 9;
 
     public static final String STRING_ZERO = "0";
-    public static final String STRING_ONE = "1";
-    public static final String STRING_TWO = "2";
-    public static final String STRING_THREE = "3";
-    public static final String STRING_FOUR = "4";
-    public static final String STRING_FIVE = "5";
-    public static final String STRING_SIX = "6";
-    public static final String STRING_SEVEN = "7";
-    public static final String STRING_EIGHT = "8";
-    public static final String STRING_NINE = "9";
     public static final String STRING_DECIMAL = ".";
 
     public static final String PARAMETER_WEIGHT = "Weight";
@@ -72,10 +63,12 @@ public class Constants {
     public static final String ERROR_INVALID_BMI = "Invalid BMI! Please check your input";
 
     public static final String KEY_BMI_VALUE = "BMI";
+    public static final String KEY_WEIGHT_UNIT = "Weight Unit";
+    public static final String KEY_HEIGHT_UNIT = "Height Unit";
+    public static final String KEY_WEIGHT_VALUE = "Weight Value";
+    public static final String KEY_HEIGHT_VALUE = "Height Value";
     public static final String KEY_FOCUS_WEIGHT = "Focus Weight";
     public static final String KEY_FOCUS_HEIGHT = "Focus Height";
     public static final String KEY_VISIBILITY_NUMPAD = "NumPad Visibility";
     public static final String KEY_VISIBILITY_RESULT = "Result Visibility";
-    public static final String KEY_WEIGHT_INPUT_VALUE = "Weight Input Value";
-    public static final String KEY_HEIGHT_INPUT_VALUE = "Height Input Value";
 }

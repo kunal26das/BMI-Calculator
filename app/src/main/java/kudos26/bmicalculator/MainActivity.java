@@ -1,20 +1,20 @@
 package kudos26.bmicalculator;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
@@ -47,9 +47,11 @@ import static kudos26.bmicalculator.Constants.INT_THREE;
 import static kudos26.bmicalculator.Constants.INT_ZERO;
 import static kudos26.bmicalculator.Constants.KEY_BMI_VALUE;
 import static kudos26.bmicalculator.Constants.KEY_FOCUS_HEIGHT;
-import static kudos26.bmicalculator.Constants.KEY_HEIGHT_INPUT_VALUE;
+import static kudos26.bmicalculator.Constants.KEY_HEIGHT_UNIT;
+import static kudos26.bmicalculator.Constants.KEY_HEIGHT_VALUE;
 import static kudos26.bmicalculator.Constants.KEY_VISIBILITY_RESULT;
-import static kudos26.bmicalculator.Constants.KEY_WEIGHT_INPUT_VALUE;
+import static kudos26.bmicalculator.Constants.KEY_WEIGHT_UNIT;
+import static kudos26.bmicalculator.Constants.KEY_WEIGHT_VALUE;
 import static kudos26.bmicalculator.Constants.KILOGRAM_TO_POUND;
 import static kudos26.bmicalculator.Constants.METER_TO_CENTIMETER;
 import static kudos26.bmicalculator.Constants.METER_TO_FEET;
@@ -75,10 +77,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView mFocusInput;
     private TextView mWeightUnit;
     private TextView mHeightUnit;
-    private Boolean mWeightSpinnerFlag;
-    private Boolean mHeightSpinnerFlag;
-    private TextView mWeightValueInput;
-    private TextView mHeightValueInput;
+    private TextView mWeightValue;
+    private TextView mHeightValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,15 +87,11 @@ public class MainActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
-
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        mWeightSpinnerFlag = false;
-        mHeightSpinnerFlag = false;
-
         mNumPad = findViewById(R.id.num_pad);
         mResult = findViewById(R.id.result_card);
         final ImageView backButton = findViewById(R.id.back_button);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         backButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -103,26 +99,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-        final LinearLayout weightView = findViewById(R.id.parameter_weight).findViewById(R.id.parameter_support);
-        final LinearLayout heightView = findViewById(R.id.parameter_height).findViewById(R.id.parameter_support);
-
-        weightView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                focusWeightInput(0);
-                showNumPad();
-            }
-        });
-
-        heightView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                focusHeightInput(0);
-                showNumPad();
-            }
-        });
-
         setupHeightFunctionality();
         setupWeightFunctionality();
         setupNumPadFunctionality();
@@ -139,10 +115,14 @@ public class MainActivity extends AppCompatActivity {
         } else {
             outState.putInt(KEY_VISIBILITY_RESULT, View.INVISIBLE);
         }
-        outState.putString(KEY_WEIGHT_INPUT_VALUE, mWeightValueInput.getText().toString());
-        outState.putString(KEY_HEIGHT_INPUT_VALUE, mHeightValueInput.getText().toString());
+
+        outState.putString(KEY_WEIGHT_UNIT, mWeightUnit.getText().toString());
+        outState.putString(KEY_HEIGHT_UNIT, mHeightUnit.getText().toString());
+        outState.putString(KEY_WEIGHT_VALUE, mWeightValue.getText().toString());
+        outState.putString(KEY_HEIGHT_VALUE, mHeightValue.getText().toString());
+
         outState.putBoolean(KEY_FOCUS_HEIGHT, false);
-        if (mFocusInput == mHeightValueInput) {
+        if (mFocusInput == mHeightValue) {
             outState.putBoolean(KEY_FOCUS_HEIGHT, true);
         }
     }
@@ -154,8 +134,12 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 focusWeightInput(0);
             }
-            mWeightValueInput.setText(inState.getString(KEY_WEIGHT_INPUT_VALUE));
-            mHeightValueInput.setText(inState.getString(KEY_HEIGHT_INPUT_VALUE));
+
+            mWeightUnit.setText(inState.getString(KEY_WEIGHT_UNIT));
+            mHeightUnit.setText(inState.getString(KEY_HEIGHT_UNIT));
+            mWeightValue.setText(inState.getString(KEY_WEIGHT_VALUE));
+            mHeightValue.setText(inState.getString(KEY_HEIGHT_VALUE));
+
             if (inState.getInt(KEY_VISIBILITY_RESULT) == View.VISIBLE) {
                 showBMI(inState.getString(KEY_BMI_VALUE));
             } else {
@@ -165,25 +149,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void focusWeightInput(float weight) {
-        mFocusInput = mWeightValueInput;
+        mFocusInput = mWeightValue;
         if (weight == 0) {
-            mWeightValueInput.setText(STRING_ZERO);
+            mWeightValue.setText(STRING_ZERO);
         } else {
-            mWeightValueInput.setText(String.valueOf(roundFloat(weight)));
+            mWeightValue.setText(String.valueOf(roundFloat(weight)));
         }
-        mWeightValueInput.setTextColor(getResources().getColor(R.color.colorAccent));
-        mHeightValueInput.setTextColor(getResources().getColor(R.color.black));
+        mWeightValue.setTextColor(getResources().getColor(R.color.colorAccent));
+        mHeightValue.setTextColor(getResources().getColor(R.color.black));
+        showNumPad();
     }
 
     private void focusHeightInput(float height) {
-        mFocusInput = mHeightValueInput;
+        mFocusInput = mHeightValue;
         if (height == 0) {
-            mHeightValueInput.setText(STRING_ZERO);
+            mHeightValue.setText(STRING_ZERO);
         } else {
-            mHeightValueInput.setText(String.valueOf(roundFloat(height)));
+            mHeightValue.setText(String.valueOf(roundFloat(height)));
         }
-        mHeightValueInput.setTextColor(getResources().getColor(R.color.colorAccent));
-        mWeightValueInput.setTextColor(getResources().getColor(R.color.black));
+        mHeightValue.setTextColor(getResources().getColor(R.color.colorAccent));
+        mWeightValue.setTextColor(getResources().getColor(R.color.black));
+        showNumPad();
     }
 
     private void showNumPad() {
@@ -194,52 +180,48 @@ public class MainActivity extends AppCompatActivity {
     private void setupWeightFunctionality() {
         final View weightParameter = findViewById(R.id.parameter_weight);
         final TextView parameterType = weightParameter.findViewById(R.id.parameter_type);
-        parameterType.setText(PARAMETER_WEIGHT);
-        mWeightValueInput = weightParameter.findViewById(R.id.parameter_value);
-        mWeightValueInput.setTextColor(getResources().getColor(R.color.colorAccent));
-        mWeightValueInput.setText(String.valueOf(WEIGHT_KILOGRAM_DEFAULT_VALUE));
+        final LinearLayout weightInfo = weightParameter.findViewById(R.id.parameter_info);
+        final LinearLayout weightUnitSelector = weightParameter.findViewById(R.id.parameter_unit_selector);
+        mWeightValue = weightParameter.findViewById(R.id.parameter_value);
         mWeightUnit = weightParameter.findViewById(R.id.parameter_unit);
+
+        parameterType.setText(PARAMETER_WEIGHT);
         mWeightUnit.setText(WEIGHT_DEFAULT_UNIT);
-        final Spinner weightSpinner = weightParameter.findViewById(R.id.spinner_parameter_type);
-        final LinearLayout weightSelector = weightParameter.findViewById(R.id.parameter_selector);
-        CustomAdapter weightSpinnerAdapter = new CustomAdapter(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.weight_units));
-        weightSpinnerAdapter.setDropDownViewResource(android.R.layout.select_dialog_singlechoice);
-        weightSpinner.setAdapter(weightSpinnerAdapter);
-        weightSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (mWeightSpinnerFlag) {
-                    String currentUnit = mWeightUnit.getText().toString();
-                    float currentValue = Float.valueOf(mWeightValueInput.getText().toString());
-                    String selectedUnit = getResources().getStringArray(R.array.weight_units)[position];
-                    if (!currentUnit.equals(selectedUnit)) {
-                        switch (currentUnit) {
-                            case WEIGHT_UNIT_KILOGRAM: {
-                                focusWeightInput(currentValue * KILOGRAM_TO_POUND);
-                                break;
+        mWeightValue.setText(String.valueOf(WEIGHT_KILOGRAM_DEFAULT_VALUE));
+        mWeightValue.setTextColor(getResources().getColor(R.color.colorAccent));
+
+        final AlertDialog weightUnitSelectorDialog = new AlertDialog.Builder(this)
+                .setItems(getResources().getStringArray(R.array.weight_units), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int position) {
+                        String currentUnit = mWeightUnit.getText().toString();
+                        float currentValue = Float.valueOf(mWeightValue.getText().toString());
+                        String selectedUnit = getResources().getStringArray(R.array.weight_units)[position];
+                        if (!currentUnit.equals(selectedUnit)) {
+                            switch (currentUnit) {
+                                case WEIGHT_UNIT_KILOGRAM: {
+                                    focusWeightInput(currentValue * KILOGRAM_TO_POUND);
+                                    break;
+                                }
+                                case WEIGHT_UNIT_POUND: {
+                                    focusWeightInput(currentValue * POUND_TO_KILOGRAM);
+                                    break;
+                                }
                             }
-                            case WEIGHT_UNIT_POUND: {
-                                focusWeightInput(currentValue * POUND_TO_KILOGRAM);
-                                break;
-                            }
+                            mWeightUnit.setText(selectedUnit);
                         }
-                        mWeightUnit.setText(selectedUnit);
+                        showNumPad();
                     }
-                    showNumPad();
-                } else {
-                    mWeightSpinnerFlag = true;
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-            }
-
-        });
-        weightSelector.setOnClickListener(new View.OnClickListener() {
+                }).create();
+        weightUnitSelector.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                weightSpinner.performClick();
+                weightUnitSelectorDialog.show();
+            }
+        });
+        weightInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                focusWeightInput(0);
             }
         });
     }
@@ -247,121 +229,112 @@ public class MainActivity extends AppCompatActivity {
     private void setupHeightFunctionality() {
         final View heightParameter = findViewById(R.id.parameter_height);
         final TextView parameterType = heightParameter.findViewById(R.id.parameter_type);
-        parameterType.setText(PARAMETER_HEIGHT);
-        mHeightValueInput = heightParameter.findViewById(R.id.parameter_value);
-        mHeightValueInput.setText(String.valueOf(HEIGHT_METER_DEFAULT_VALUE));
+        final LinearLayout heightView = heightParameter.findViewById(R.id.parameter_info);
+        final LinearLayout heightUnitSelector = heightParameter.findViewById(R.id.parameter_unit_selector);
+        mHeightValue = heightParameter.findViewById(R.id.parameter_value);
         mHeightUnit = heightParameter.findViewById(R.id.parameter_unit);
-        mHeightUnit.setText(HEIGHT_DEFAULT_UNIT);
-        final Spinner heightSpinner = heightParameter.findViewById(R.id.spinner_parameter_type);
-        final LinearLayout heightSelector = heightParameter.findViewById(R.id.parameter_selector);
-        CustomAdapter heightSpinnerAdapter = new CustomAdapter(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.height_units));
-        heightSpinnerAdapter.setDropDownViewResource(android.R.layout.select_dialog_singlechoice);
-        heightSpinner.setAdapter(heightSpinnerAdapter);
-        heightSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (mHeightSpinnerFlag) {
-                    String currentUnit = mHeightUnit.getText().toString();
-                    Float currentValue = Float.valueOf(mHeightValueInput.getText().toString());
-                    String selectedUnit = getResources().getStringArray(R.array.height_units)[position];
-                    if (!currentUnit.equals(selectedUnit)) {
-                        switch (currentUnit) {
-                            case HEIGHT_UNIT_METER: {
-                                switch (selectedUnit) {
-                                    case HEIGHT_UNIT_CENTIMETER: {
-                                        focusHeightInput(currentValue * METER_TO_CENTIMETER);
-                                        break;
-                                    }
-                                    case HEIGHT_UNIT_FEET: {
-                                        focusHeightInput(currentValue * METER_TO_FEET);
-                                        break;
-                                    }
-                                    case HEIGHT_UNIT_INCH: {
-                                        focusHeightInput(currentValue * METER_TO_INCH);
-                                        break;
-                                    }
-                                }
-                                break;
-                            }
-                            case HEIGHT_UNIT_CENTIMETER: {
-                                switch (selectedUnit) {
-                                    case HEIGHT_UNIT_METER: {
-                                        focusHeightInput(currentValue * CENTIMETER_TO_METER);
-                                        break;
-                                    }
-                                    case HEIGHT_UNIT_FEET: {
-                                        focusHeightInput(currentValue * CENTIMETER_TO_FEET);
-                                        break;
-                                    }
-                                    case HEIGHT_UNIT_INCH: {
-                                        focusHeightInput(currentValue * CENTIMETER_TO_INCH);
-                                        break;
-                                    }
-                                }
-                                break;
-                            }
-                            case HEIGHT_UNIT_FEET: {
-                                switch (selectedUnit) {
-                                    case HEIGHT_UNIT_METER: {
-                                        focusHeightInput(currentValue * FEET_TO_METER);
-                                        break;
-                                    }
-                                    case HEIGHT_UNIT_CENTIMETER: {
-                                        focusHeightInput(currentValue * FEET_TO_CENTIMETER);
-                                        break;
-                                    }
-                                    case HEIGHT_UNIT_INCH: {
-                                        focusHeightInput(currentValue * FEET_TO_INCH);
-                                        break;
-                                    }
-                                }
-                                break;
-                            }
-                            case HEIGHT_UNIT_INCH: {
-                                switch (selectedUnit) {
-                                    case HEIGHT_UNIT_METER: {
-                                        focusHeightInput(currentValue * INCH_TO_METER);
-                                        break;
-                                    }
-                                    case HEIGHT_UNIT_CENTIMETER: {
-                                        focusHeightInput(currentValue * INCH_TO_CENTIMETER);
-                                        break;
-                                    }
-                                    case HEIGHT_UNIT_FEET: {
-                                        focusHeightInput(currentValue * INCH_TO_FEET);
-                                        break;
-                                    }
-                                }
-                                break;
-                            }
-                        }
-                        mHeightUnit.setText(selectedUnit);
-                    }
-                    showNumPad();
-                } else {
-                    mHeightSpinnerFlag = true;
-                }
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-            }
-        });
-        heightSelector.setOnClickListener(new View.OnClickListener() {
+        parameterType.setText(PARAMETER_HEIGHT);
+        mHeightUnit.setText(HEIGHT_DEFAULT_UNIT);
+        mHeightValue.setText(String.valueOf(HEIGHT_METER_DEFAULT_VALUE));
+
+        final AlertDialog heightUnitSelectorDialog = new AlertDialog.Builder(this)
+                .setItems(getResources().getStringArray(R.array.height_units), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int position) {
+                        String selectedUnit = getResources().getStringArray(R.array.height_units)[position];
+                        String currentUnit = mHeightUnit.getText().toString();
+                        Float currentValue = Float.valueOf(mHeightValue.getText().toString());
+                        if (!currentUnit.equals(selectedUnit)) {
+                            switch (currentUnit) {
+                                case HEIGHT_UNIT_METER: {
+                                    switch (selectedUnit) {
+                                        case HEIGHT_UNIT_CENTIMETER: {
+                                            focusHeightInput(currentValue * METER_TO_CENTIMETER);
+                                            break;
+                                        }
+                                        case HEIGHT_UNIT_FEET: {
+                                            focusHeightInput(currentValue * METER_TO_FEET);
+                                            break;
+                                        }
+                                        case HEIGHT_UNIT_INCH: {
+                                            focusHeightInput(currentValue * METER_TO_INCH);
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
+                                case HEIGHT_UNIT_CENTIMETER: {
+                                    switch (selectedUnit) {
+                                        case HEIGHT_UNIT_METER: {
+                                            focusHeightInput(currentValue * CENTIMETER_TO_METER);
+                                            break;
+                                        }
+                                        case HEIGHT_UNIT_FEET: {
+                                            focusHeightInput(currentValue * CENTIMETER_TO_FEET);
+                                            break;
+                                        }
+                                        case HEIGHT_UNIT_INCH: {
+                                            focusHeightInput(currentValue * CENTIMETER_TO_INCH);
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
+                                case HEIGHT_UNIT_FEET: {
+                                    switch (selectedUnit) {
+                                        case HEIGHT_UNIT_METER: {
+                                            focusHeightInput(currentValue * FEET_TO_METER);
+                                            break;
+                                        }
+                                        case HEIGHT_UNIT_CENTIMETER: {
+                                            focusHeightInput(currentValue * FEET_TO_CENTIMETER);
+                                            break;
+                                        }
+                                        case HEIGHT_UNIT_INCH: {
+                                            focusHeightInput(currentValue * FEET_TO_INCH);
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
+                                case HEIGHT_UNIT_INCH: {
+                                    switch (selectedUnit) {
+                                        case HEIGHT_UNIT_METER: {
+                                            focusHeightInput(currentValue * INCH_TO_METER);
+                                            break;
+                                        }
+                                        case HEIGHT_UNIT_CENTIMETER: {
+                                            focusHeightInput(currentValue * INCH_TO_CENTIMETER);
+                                            break;
+                                        }
+                                        case HEIGHT_UNIT_FEET: {
+                                            focusHeightInput(currentValue * INCH_TO_FEET);
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                            mHeightUnit.setText(selectedUnit);
+                        }
+                        showNumPad();
+                    }
+                }).create();
+        heightUnitSelector.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                heightSpinner.performClick();
+                heightUnitSelectorDialog.show();
+            }
+        });
+        heightView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                focusHeightInput(0);
             }
         });
     }
 
     private void setupNumPadFunctionality() {
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int height = displayMetrics.heightPixels;
-        int width = displayMetrics.widthPixels;
-        int min = width < height ? width : height;
-
         final List<FrameLayout> numberButtons = new ArrayList<>();
         numberButtons.add((FrameLayout) findViewById(R.id.number_zero));
         numberButtons.add((FrameLayout) findViewById(R.id.number_one));
@@ -373,15 +346,21 @@ public class MainActivity extends AppCompatActivity {
         numberButtons.add((FrameLayout) findViewById(R.id.number_seven));
         numberButtons.add((FrameLayout) findViewById(R.id.number_eight));
         numberButtons.add((FrameLayout) findViewById(R.id.number_nine));
-        final Drawable simpleDrawable = numberButtons.get(0).getBackground();
         final FrameLayout allClearButton = findViewById(R.id.all_clear);
         final FrameLayout decimalButton = findViewById(R.id.decimal);
         final FrameLayout deleteButton = findViewById(R.id.delete);
         final FrameLayout goButton = findViewById(R.id.go);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int height = displayMetrics.heightPixels;
+        int width = displayMetrics.widthPixels;
+        int min = width < height ? width : height;
         LayoutParams params = goButton.getLayoutParams();
-        params.height = min / INT_FOUR;
         params.width = min / INT_FOUR;
         goButton.setLayoutParams(params);
+
+        final Drawable simpleDrawable = numberButtons.get(0).getBackground();
         for (int i = INT_ZERO; i < numberButtons.size(); i++) {
             final String stringNumber = String.valueOf(i);
             View button = numberButtons.get(i);
@@ -497,8 +476,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private float getBMI() {
-        float weightValue = Float.valueOf(mWeightValueInput.getText().toString());
-        float heightValue = Float.valueOf(mHeightValueInput.getText().toString());
+        float weightValue = Float.valueOf(mWeightValue.getText().toString());
+        float heightValue = Float.valueOf(mHeightValue.getText().toString());
         String weightUnit = mWeightUnit.getText().toString();
         String heightUnit = mHeightUnit.getText().toString();
         if (weightUnit.equals(WEIGHT_UNIT_POUND)) {
