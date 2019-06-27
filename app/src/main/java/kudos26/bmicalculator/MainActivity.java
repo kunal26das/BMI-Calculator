@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         weightView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                focusWeightInput();
+                focusWeightInput(0);
                 showNumPad();
             }
         });
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         heightView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                focusHeightInput();
+                focusHeightInput(0);
                 showNumPad();
             }
         });
@@ -150,9 +150,9 @@ public class MainActivity extends AppCompatActivity {
     private void restoreSavedInstanceState(Bundle inState) {
         if (inState != null) {
             if (inState.getBoolean(KEY_FOCUS_HEIGHT)) {
-                focusHeightInput();
+                focusHeightInput(0);
             } else {
-                focusWeightInput();
+                focusWeightInput(0);
             }
             mWeightValueInput.setText(inState.getString(KEY_WEIGHT_INPUT_VALUE));
             mHeightValueInput.setText(inState.getString(KEY_HEIGHT_INPUT_VALUE));
@@ -164,30 +164,24 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void focusWeightInput() {
-        mFocusInput = mWeightValueInput;
-        mWeightValueInput.setText(STRING_ZERO);
-        mWeightValueInput.setTextColor(getResources().getColor(R.color.colorAccent));
-        mHeightValueInput.setTextColor(getResources().getColor(R.color.black));
-    }
-
     private void focusWeightInput(float weight) {
         mFocusInput = mWeightValueInput;
-        mWeightValueInput.setText(String.valueOf(roundFloat(weight)));
+        if (weight == 0) {
+            mWeightValueInput.setText(STRING_ZERO);
+        } else {
+            mWeightValueInput.setText(String.valueOf(roundFloat(weight)));
+        }
         mWeightValueInput.setTextColor(getResources().getColor(R.color.colorAccent));
         mHeightValueInput.setTextColor(getResources().getColor(R.color.black));
-    }
-
-    private void focusHeightInput() {
-        mFocusInput = mHeightValueInput;
-        mHeightValueInput.setText(STRING_ZERO);
-        mHeightValueInput.setTextColor(getResources().getColor(R.color.colorAccent));
-        mWeightValueInput.setTextColor(getResources().getColor(R.color.black));
     }
 
     private void focusHeightInput(float height) {
         mFocusInput = mHeightValueInput;
-        mHeightValueInput.setText(String.valueOf(roundFloat(height)));
+        if (height == 0) {
+            mHeightValueInput.setText(STRING_ZERO);
+        } else {
+            mHeightValueInput.setText(String.valueOf(roundFloat(height)));
+        }
         mHeightValueInput.setTextColor(getResources().getColor(R.color.colorAccent));
         mWeightValueInput.setTextColor(getResources().getColor(R.color.black));
     }
@@ -526,7 +520,9 @@ public class MainActivity extends AppCompatActivity {
         }
         if (heightValue > 0) {
             return roundFloat(weightValue / (heightValue * heightValue));
-        } else return 1;
+        } else {
+            return 0;
+        }
     }
 
     private void showBMI(String bmiString) {
