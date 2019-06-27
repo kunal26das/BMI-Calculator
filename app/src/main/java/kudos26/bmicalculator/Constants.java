@@ -42,10 +42,24 @@ public class Constants {
     public static final int WEIGHT_KILOGRAM_DEFAULT_VALUE = 60;
     public static final float HEIGHT_METER_DEFAULT_VALUE = 1.7f;
 
+    public static final float KILOGRAM_TO_POUND = 2.20462f;
     public static final float POUND_TO_KILOGRAM = 0.453592f;
+
+    public static final float METER_TO_CENTIMETER = 100f;
+    public static final float METER_TO_FEET = 3.28084f;
+    public static final float METER_TO_INCH = 39.3701f;
+
     public static final float CENTIMETER_TO_METER = 0.01f;
+    public static final float CENTIMETER_TO_FEET = 0.0328084f;
+    public static final float CENTIMETER_TO_INCH = 0.393701f;
+
     public static final float FEET_TO_METER = 0.3048f;
+    public static final float FEET_TO_CENTIMETER = 30.48f;
+    public static final float FEET_TO_INCH = 12f;
+
     public static final float INCH_TO_METER = 0.0254f;
+    public static final float INCH_TO_CENTIMETER = 2.54f;
+    public static final float INCH_TO_FEET = 0.0833333f;
 
     public static final float[] RANGE_UNDERWEIGHT = {16.0f, 18.5f};
     public static final float[] RANGE_NORMAL = {18.5f, 25.0f};

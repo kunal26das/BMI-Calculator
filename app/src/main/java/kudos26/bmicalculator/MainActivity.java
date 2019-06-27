@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -23,14 +24,21 @@ import static android.view.ViewGroup.LayoutParams;
 import static kudos26.bmicalculator.Constants.BMI_NORMAL;
 import static kudos26.bmicalculator.Constants.BMI_OVER_WEIGHT;
 import static kudos26.bmicalculator.Constants.BMI_UNDERWEIGHT;
+import static kudos26.bmicalculator.Constants.CENTIMETER_TO_FEET;
+import static kudos26.bmicalculator.Constants.CENTIMETER_TO_INCH;
 import static kudos26.bmicalculator.Constants.CENTIMETER_TO_METER;
 import static kudos26.bmicalculator.Constants.ERROR_INVALID_BMI;
+import static kudos26.bmicalculator.Constants.FEET_TO_CENTIMETER;
+import static kudos26.bmicalculator.Constants.FEET_TO_INCH;
 import static kudos26.bmicalculator.Constants.FEET_TO_METER;
 import static kudos26.bmicalculator.Constants.HEIGHT_DEFAULT_UNIT;
 import static kudos26.bmicalculator.Constants.HEIGHT_METER_DEFAULT_VALUE;
 import static kudos26.bmicalculator.Constants.HEIGHT_UNIT_CENTIMETER;
 import static kudos26.bmicalculator.Constants.HEIGHT_UNIT_FEET;
 import static kudos26.bmicalculator.Constants.HEIGHT_UNIT_INCH;
+import static kudos26.bmicalculator.Constants.HEIGHT_UNIT_METER;
+import static kudos26.bmicalculator.Constants.INCH_TO_CENTIMETER;
+import static kudos26.bmicalculator.Constants.INCH_TO_FEET;
 import static kudos26.bmicalculator.Constants.INCH_TO_METER;
 import static kudos26.bmicalculator.Constants.INT_FOUR;
 import static kudos26.bmicalculator.Constants.INT_ONE;
@@ -42,6 +50,10 @@ import static kudos26.bmicalculator.Constants.KEY_FOCUS_HEIGHT;
 import static kudos26.bmicalculator.Constants.KEY_HEIGHT_INPUT_VALUE;
 import static kudos26.bmicalculator.Constants.KEY_VISIBILITY_RESULT;
 import static kudos26.bmicalculator.Constants.KEY_WEIGHT_INPUT_VALUE;
+import static kudos26.bmicalculator.Constants.KILOGRAM_TO_POUND;
+import static kudos26.bmicalculator.Constants.METER_TO_CENTIMETER;
+import static kudos26.bmicalculator.Constants.METER_TO_FEET;
+import static kudos26.bmicalculator.Constants.METER_TO_INCH;
 import static kudos26.bmicalculator.Constants.PARAMETER_HEIGHT;
 import static kudos26.bmicalculator.Constants.PARAMETER_WEIGHT;
 import static kudos26.bmicalculator.Constants.POUND_TO_KILOGRAM;
@@ -52,6 +64,7 @@ import static kudos26.bmicalculator.Constants.STRING_DECIMAL;
 import static kudos26.bmicalculator.Constants.STRING_ZERO;
 import static kudos26.bmicalculator.Constants.WEIGHT_DEFAULT_UNIT;
 import static kudos26.bmicalculator.Constants.WEIGHT_KILOGRAM_DEFAULT_VALUE;
+import static kudos26.bmicalculator.Constants.WEIGHT_UNIT_KILOGRAM;
 import static kudos26.bmicalculator.Constants.WEIGHT_UNIT_POUND;
 
 @SuppressLint("ClickableViewAccessibility")
@@ -74,6 +87,8 @@ public class MainActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         mWeightSpinnerFlag = false;
         mHeightSpinnerFlag = false;
@@ -142,8 +157,7 @@ public class MainActivity extends AppCompatActivity {
             mWeightValueInput.setText(inState.getString(KEY_WEIGHT_INPUT_VALUE));
             mHeightValueInput.setText(inState.getString(KEY_HEIGHT_INPUT_VALUE));
             if (inState.getInt(KEY_VISIBILITY_RESULT) == View.VISIBLE) {
-                setBMIString(inState.getString(KEY_BMI_VALUE));
-                showResult();
+                showBMI(inState.getString(KEY_BMI_VALUE));
             } else {
                 showNumPad();
             }
@@ -157,6 +171,13 @@ public class MainActivity extends AppCompatActivity {
         mHeightValueInput.setTextColor(getResources().getColor(R.color.black));
     }
 
+    private void focusWeightInput(float weight) {
+        mFocusInput = mWeightValueInput;
+        mWeightValueInput.setText(String.valueOf(roundFloat(weight)));
+        mWeightValueInput.setTextColor(getResources().getColor(R.color.colorAccent));
+        mHeightValueInput.setTextColor(getResources().getColor(R.color.black));
+    }
+
     private void focusHeightInput() {
         mFocusInput = mHeightValueInput;
         mHeightValueInput.setText(STRING_ZERO);
@@ -164,14 +185,16 @@ public class MainActivity extends AppCompatActivity {
         mWeightValueInput.setTextColor(getResources().getColor(R.color.black));
     }
 
+    private void focusHeightInput(float height) {
+        mFocusInput = mHeightValueInput;
+        mHeightValueInput.setText(String.valueOf(roundFloat(height)));
+        mHeightValueInput.setTextColor(getResources().getColor(R.color.colorAccent));
+        mWeightValueInput.setTextColor(getResources().getColor(R.color.black));
+    }
+
     private void showNumPad() {
         mNumPad.setVisibility(View.VISIBLE);
         mResult.setVisibility(View.INVISIBLE);
-    }
-
-    private void showResult() {
-        mResult.setVisibility(View.VISIBLE);
-        mNumPad.setVisibility(View.INVISIBLE);
     }
 
     private void setupWeightFunctionality() {
@@ -192,8 +215,23 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 if (mWeightSpinnerFlag) {
-                    mWeightUnit.setText(getResources().getStringArray(R.array.weight_units)[position]);
-                    focusWeightInput();
+                    String currentUnit = mWeightUnit.getText().toString();
+                    float currentValue = Float.valueOf(mWeightValueInput.getText().toString());
+                    String selectedUnit = getResources().getStringArray(R.array.weight_units)[position];
+                    if (!currentUnit.equals(selectedUnit)) {
+                        switch (currentUnit) {
+                            case WEIGHT_UNIT_KILOGRAM: {
+                                focusWeightInput(currentValue * KILOGRAM_TO_POUND);
+                                break;
+                            }
+                            case WEIGHT_UNIT_POUND: {
+                                focusWeightInput(currentValue * POUND_TO_KILOGRAM);
+                                break;
+                            }
+                        }
+                        mWeightUnit.setText(selectedUnit);
+                    }
+                    showNumPad();
                 } else {
                     mWeightSpinnerFlag = true;
                 }
@@ -229,8 +267,83 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 if (mHeightSpinnerFlag) {
-                    mHeightUnit.setText(getResources().getStringArray(R.array.height_units)[position]);
-                    focusHeightInput();
+                    String currentUnit = mHeightUnit.getText().toString();
+                    Float currentValue = Float.valueOf(mHeightValueInput.getText().toString());
+                    String selectedUnit = getResources().getStringArray(R.array.height_units)[position];
+                    if (!currentUnit.equals(selectedUnit)) {
+                        switch (currentUnit) {
+                            case HEIGHT_UNIT_METER: {
+                                switch (selectedUnit) {
+                                    case HEIGHT_UNIT_CENTIMETER: {
+                                        focusHeightInput(currentValue * METER_TO_CENTIMETER);
+                                        break;
+                                    }
+                                    case HEIGHT_UNIT_FEET: {
+                                        focusHeightInput(currentValue * METER_TO_FEET);
+                                        break;
+                                    }
+                                    case HEIGHT_UNIT_INCH: {
+                                        focusHeightInput(currentValue * METER_TO_INCH);
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                            case HEIGHT_UNIT_CENTIMETER: {
+                                switch (selectedUnit) {
+                                    case HEIGHT_UNIT_METER: {
+                                        focusHeightInput(currentValue * CENTIMETER_TO_METER);
+                                        break;
+                                    }
+                                    case HEIGHT_UNIT_FEET: {
+                                        focusHeightInput(currentValue * CENTIMETER_TO_FEET);
+                                        break;
+                                    }
+                                    case HEIGHT_UNIT_INCH: {
+                                        focusHeightInput(currentValue * CENTIMETER_TO_INCH);
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                            case HEIGHT_UNIT_FEET: {
+                                switch (selectedUnit) {
+                                    case HEIGHT_UNIT_METER: {
+                                        focusHeightInput(currentValue * FEET_TO_METER);
+                                        break;
+                                    }
+                                    case HEIGHT_UNIT_CENTIMETER: {
+                                        focusHeightInput(currentValue * FEET_TO_CENTIMETER);
+                                        break;
+                                    }
+                                    case HEIGHT_UNIT_INCH: {
+                                        focusHeightInput(currentValue * FEET_TO_INCH);
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                            case HEIGHT_UNIT_INCH: {
+                                switch (selectedUnit) {
+                                    case HEIGHT_UNIT_METER: {
+                                        focusHeightInput(currentValue * INCH_TO_METER);
+                                        break;
+                                    }
+                                    case HEIGHT_UNIT_CENTIMETER: {
+                                        focusHeightInput(currentValue * INCH_TO_CENTIMETER);
+                                        break;
+                                    }
+                                    case HEIGHT_UNIT_FEET: {
+                                        focusHeightInput(currentValue * INCH_TO_FEET);
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                        mHeightUnit.setText(selectedUnit);
+                    }
+                    showNumPad();
                 } else {
                     mHeightSpinnerFlag = true;
                 }
@@ -380,8 +493,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(view.getContext(), ERROR_INVALID_BMI, Toast.LENGTH_SHORT).show();
                         return true;
                     }
-                    setBMIString(String.valueOf(bmi));
-                    showResult();
+                    showBMI(String.valueOf(bmi));
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     view.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 }
@@ -413,15 +525,18 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         if (heightValue > 0) {
-            float bmiResult = weightValue / (heightValue * heightValue);
-            bmiResult = Math.round(bmiResult * 10) / 10.0f;
-            return bmiResult;
+            return roundFloat(weightValue / (heightValue * heightValue));
         } else return 1;
     }
 
-    private void setBMIString(String bmiString) {
-        final View resultCard = findViewById(R.id.result_card);
-        final TextView bmiValueTextView = resultCard.findViewById(R.id.result_bmi_value);
+    private void showBMI(String bmiString) {
+        final TextView bmiValueTextView = mResult.findViewById(R.id.result_bmi_value);
         bmiValueTextView.setText(bmiString);
+        mResult.setVisibility(View.VISIBLE);
+        mNumPad.setVisibility(View.INVISIBLE);
+    }
+
+    private float roundFloat(float value) {
+        return Math.round(value * 10) / 10.0f;
     }
 }
