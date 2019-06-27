@@ -45,7 +45,7 @@ public class Constants {
     public static final float KILOGRAM_TO_POUND = 2.20462f;
     public static final float POUND_TO_KILOGRAM = 0.453592f;
 
-    public static final float METER_TO_CENTIMETER = 100f;
+    public static final int METER_TO_CENTIMETER = 100;
     public static final float METER_TO_FEET = 3.28084f;
     public static final float METER_TO_INCH = 39.3701f;
 
@@ -55,7 +55,7 @@ public class Constants {
 
     public static final float FEET_TO_METER = 0.3048f;
     public static final float FEET_TO_CENTIMETER = 30.48f;
-    public static final float FEET_TO_INCH = 12f;
+    public static final int FEET_TO_INCH = 12;
 
     public static final float INCH_TO_METER = 0.0254f;
     public static final float INCH_TO_CENTIMETER = 2.54f;

@@ -70,15 +70,15 @@ import static kudos26.bmicalculator.Constants.WEIGHT_UNIT_POUND;
 @SuppressLint("ClickableViewAccessibility")
 public class MainActivity extends AppCompatActivity {
 
+    private View mResult;
+    private View mNumPad;
     private TextView mFocusInput;
-    private TextView mWeightValueInput;
-    private TextView mHeightValueInput;
     private TextView mWeightUnit;
     private TextView mHeightUnit;
     private Boolean mWeightSpinnerFlag;
     private Boolean mHeightSpinnerFlag;
-    private View mResult;
-    private View mNumPad;
+    private TextView mWeightValueInput;
+    private TextView mHeightValueInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
