@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BMI Calculator</string>
+    <string name="app_name">BMI</string>
 
     <string name="zero">0</string>
     <string name="one">1</string>
@@ -38,6 +38,8 @@
     <string name="BMI_normal_start">18.5</string>
     <string name="BMI_normal_end">25.0</string>
     <string name="BMI_overweight">40.0</string>
+    <string name="back_arrow">Back Arrow</string>
+    <string name="delete">Delete</string>
 
     <string-array name="weight_units">
         <item id="kilogram">Kilogram</item>

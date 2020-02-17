@@ -26,6 +26,7 @@
                 android:layout_height="32dp"
                 android:padding="2dp"
                 android:id="@+id/back_button"
+                android:contentDescription="@string/back_arrow"
                 android:src="@mipmap/ic_back_arrow_foreground" />
 
             <TextView
